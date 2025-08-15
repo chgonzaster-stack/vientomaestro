@@ -1,0 +1,29 @@
+﻿# dependencias
+node_modules/
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# next / build
+.next/
+out/
+dist/
+build/
+coverage/
+
+# env
+.env*
+!.env.example
+
+# SO / IDE
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# Capacitor / móvil (si existiera)
+android/app/build/
+android/build/
+ios/build/
+ios/Pods/
