@@ -1,8 +1,7 @@
 // app/layout.tsx
-import '../src/app/globals.css'; // <- tu import corregido
+import './globals.css';
 import { Toaster } from '@/components/ui/toast';
-import SWRegister from '@/components/sw-register';
-import Script from 'next/script'; // 👈 IMPORTANTE: importar Script
+import Script from 'next/script';
 
 export const metadata = {
   title: 'Viento Maestro',
@@ -13,7 +12,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
-        {/* 👇 Inserta aquí el script global de AdSense */}
+        {/* ✅ Meta explícitas para NO ofrecer instalación como app */}
+        <meta name="apple-mobile-web-app-capable" content="no" />
+        <meta name="mobile-web-app-capable" content="no" />
+        <meta name="application-name" content="Viento Maestro" />
+        <meta name="theme-color" content="#ffffff" />
+
+        {/* ✅ Favicon clásico (opcional, ajusta la ruta si usas otro) */}
+        <link rel="icon" href="/favicon.ico" />
+
+        {/* ✅ Script global de Google AdSense (deja tu client tal cual) */}
         <Script
           id="adsense-script"
           async
@@ -21,20 +29,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
-
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#1e40af" />
-        <link rel="icon" href="/icons/icon-192.png" />
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
 
       <body className="min-h-screen antialiased">
-        <Toaster>
-          <SWRegister />
-          {children}
-        </Toaster>
+        <Toaster />
+        {children}
       </body>
     </html>
   );
