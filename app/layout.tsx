@@ -1,7 +1,7 @@
 // app/layout.tsx
 import './globals.css';
-import { Toaster } from '@/components/ui/toast';
 import Script from 'next/script';
+import { Toaster } from '@/components/ui/toast';
 
 export const metadata = {
   title: 'Viento Maestro',
@@ -10,35 +10,18 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" suppressHydrationWarning>
+    // Forzamos modo oscuro con la clase `dark`
+    <html lang="es" className="dark" suppressHydrationWarning>
       <head>
-        {/* Evitar oferta de instalación como app */}
+        {/* Evitar oferta de instalación como PWA */}
         <meta name="apple-mobile-web-app-capable" content="no" />
         <meta name="mobile-web-app-capable" content="no" />
         <meta name="application-name" content="Viento Maestro" />
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#0b1220" />
+
         <link rel="icon" href="/favicon.ico" />
 
-        {/* Script de tema antes del primer pintado */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var ls = localStorage.getItem('theme');
-                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (ls === 'dark' || (!ls && prefersDark)) {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
-
-        {/* Google AdSense */}
+        {/* AdSense */}
         <Script
           id="adsense-script"
           async
@@ -47,13 +30,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           strategy="afterInteractive"
         />
       </head>
-
-      {/* Usa bg/text si ya definiste las variables en globals.css */}
       <body className="min-h-screen antialiased">
-        {/* 👉 El Toaster DEBE envolver a children */}
-        <Toaster>
-          {children}
-        </Toaster>
+        <Toaster />
+        {children}
       </body>
     </html>
   );

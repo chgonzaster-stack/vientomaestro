@@ -2,4 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Tus estilos globales aquí */
+/* ===========================
+   Tema (tokens) – DARK por defecto
+   =========================== */
+
+/* Si quieres oscuridad SIEMPRE, dejamos los mismos valores en :root y .dark */
+@layer base {
+  :root,
+  .dark {
+    /* HSL tokens usados por shadcn/ui */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    /* azul “brand” agradable */
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+
+    --radius: 0.5rem; /* 8px */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* (Opcional) pequeños ajustes para “pills” de Tabs si los usas */
+@layer components {
+  /* Ejemplo: asegúrate de que tus tabs activos se vean como “pill” */
+  .tabs-list {
+    @apply inline-flex items-center justify-center rounded-md bg-muted p-1 text-muted-foreground;
+  }
+  .tabs-trigger {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 
+           text-sm font-medium ring-offset-background transition-all
+           hover:text-foreground focus-visible:outline-none focus-visible:ring-2 
+           focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
+           data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm;
+  }
+}
