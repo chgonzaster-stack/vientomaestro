@@ -12,34 +12,33 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
-        {/* ❌ Deshabilita comportamiento PWA */}
+        {/* Evitar oferta de instalación como app */}
         <meta name="apple-mobile-web-app-capable" content="no" />
         <meta name="mobile-web-app-capable" content="no" />
         <meta name="application-name" content="Viento Maestro" />
         <meta name="theme-color" content="#ffffff" />
-
-        {/* Favicon clásico */}
         <link rel="icon" href="/favicon.ico" />
 
-        {/* 🌓 Inicializa tema ANTES del primer paint */}
+        {/* Script de tema antes del primer pintado */}
         <script
-          id="theme-init"
           dangerouslySetInnerHTML={{
             __html: `
-(function () {
-  try {
-    var ls = localStorage.getItem('theme');                        // 'dark' | 'light' | null
-    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    var useDark = ls === 'dark' || (!ls && prefersDark);           // si no hay LS, usa preferencia del SO
-    var root = document.documentElement;                           // <html>
-    if (useDark) root.classList.add('dark'); else root.classList.remove('dark');
-  } catch (e) {}
-})();
-          `.trim(),
+              (function() {
+                try {
+                  var ls = localStorage.getItem('theme');
+                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (ls === 'dark' || (!ls && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
           }}
         />
 
-        {/* ✅ Script global de Google AdSense */}
+        {/* Google AdSense */}
         <Script
           id="adsense-script"
           async
@@ -49,10 +48,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
 
-      {/* Clases base para que el cambio claro/oscuro sea visible de inmediato */}
-      <body className="min-h-screen antialiased bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-        <Toaster />
-        {children}
+      {/* Usa bg/text si ya definiste las variables en globals.css */}
+      <body className="min-h-screen antialiased">
+        {/* 👉 El Toaster DEBE envolver a children */}
+        <Toaster>
+          {children}
+        </Toaster>
       </body>
     </html>
   );
