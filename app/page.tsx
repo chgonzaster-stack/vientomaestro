@@ -3,40 +3,36 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRightLeft, ClipboardCopy, Download, Eraser, Upload } from 'lucide-react';
 
-// ✅ RUTAS RELATIVAS (desde /app a /src/…)
 import {
   INSTRUMENTS_DATA,
   type InstrumentInfo,
   concertKeys,
   type ConcertKey,
-} from '../src/constants/instruments';
-import { transposeLine, type Notation } from '../src/lib/transposition';
+} from '@/constants/instruments';
+import { transposeLine, type Notation } from '@/lib/transposition';
 
-import { Card, CardContent, CardHeader } from '../src/components/ui/card';
-import { Button } from '../src/components/ui/button';
-import { Textarea } from '../src/components/ui/textarea';
-import { Select } from '../src/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../src/components/ui/tabs';
-import ThemeToggle from '../src/components/theme-toggle';
-import { useToast } from '../src/components/ui/toast';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Select } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/components/ui/toast';
 
 const tabs = ['instrumento', 'tono'] as const;
 type Tab = (typeof tabs)[number];
 
 export default function TransposerPage() {
   const [tab, setTab] = useState<Tab>('instrumento');
-
   const [originInstrument, setOriginInstrument] = useState<InstrumentInfo | null>(null);
   const [targetInstrument, setTargetInstrument] = useState<InstrumentInfo | null>(null);
-
   const [originKey, setOriginKey] = useState<ConcertKey | null>(null);
   const [targetKey, setTargetKey] = useState<ConcertKey | null>(null);
-
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [year, setYear] = useState<number | null>(null);
 
+  // ⬅️ este es el selector que quieres visible
   const [notation, setNotation] = useState<Notation>('sharps');
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -52,58 +48,44 @@ export default function TransposerPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.name.toLowerCase().endsWith('.txt')) {
-      toast({ title: 'Archivo no válido', description: 'Solo se admite .txt', variant: 'destructive' });
+    if (!file.name.endsWith('.txt')) {
+      toast({ title: 'Archivo no válido', description: 'Solo .txt', variant: 'destructive' });
       e.currentTarget.value = '';
       return;
     }
 
-    try {
-      const text = await file.text();
-      setInputText(text);
-      toast({ title: 'Archivo cargado' });
-    } catch {
-      toast({ title: 'No se pudo leer el archivo', variant: 'destructive' });
-    } finally {
-      e.currentTarget.value = '';
-    }
+    const text = await file.text();
+    setInputText(text);
+    e.currentTarget.value = '';
+    toast({ title: 'Archivo cargado' });
   }
 
   function doTranspose() {
     setIsLoading(true);
     try {
-      if (!inputText.trim()) {
-        toast({ title: 'Sin contenido', description: 'Ingresa o carga un cifrado.', variant: 'destructive' });
-        return;
-      }
-
       if (tab === 'instrumento') {
-        if (!originInstrument || !targetInstrument) {
+        if (!originInstrument || !targetInstrument || !inputText.trim()) {
           toast({ title: 'Completa los campos requeridos', variant: 'destructive' });
           return;
         }
         const semitones = targetInstrument.transposeSemitones - originInstrument.transposeSemitones;
         const prefersFlats = targetInstrument.prefersFlats ?? false;
-
         const out = inputText
           .split('\n')
           .map((line) => transposeLine(line, semitones, prefersFlats, notation))
           .join('\n');
-
         setOutputText(out);
       } else {
-        if (!originKey || !targetKey) {
+        if (!originKey || !targetKey || !inputText.trim()) {
           toast({ title: 'Completa los campos requeridos', variant: 'destructive' });
           return;
         }
         const semitones = targetKey.value - originKey.value;
         const prefersFlats = targetKey.prefersFlats ?? false;
-
         const out = inputText
           .split('\n')
           .map((line) => transposeLine(line, semitones, prefersFlats, notation))
           .join('\n');
-
         setOutputText(out);
       }
     } catch (err) {
@@ -126,17 +108,15 @@ export default function TransposerPage() {
   function downloadOut() {
     if (!outputText) return;
     const name = prompt('Nombre del archivo .txt', 'transpuesto.txt') || 'transpuesto.txt';
-
     const blob = new Blob([outputText], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = name.toLowerCase().endsWith('.txt') ? name : name + '.txt';
+    a.download = name.endsWith('.txt') ? name : name + '.txt';
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
-
     toast({ title: 'Descargado' });
   }
 
@@ -156,25 +136,26 @@ export default function TransposerPage() {
       <Card className="mx-auto my-6">
         <CardHeader>
           <div className="flex items-center justify-between">
+            {/* título */}
             <div>
               <h1 className="text-3xl font-semibold flex items-center gap-2">🎵 Viento Maestro</h1>
               <p className="text-sm opacity-80">
                 Transpositor de música para instrumentos de viento
               </p>
             </div>
+
+            {/* ⬅️ Solo el selector de notación (sin botón de modo) */}
             <div className="flex items-center gap-2">
               <select
                 value={notation}
                 onChange={(e) => setNotation(e.target.value as Notation)}
-                className="rounded-md border px-2 py-1 text-sm"
+                className="h-9 min-w-[170px] rounded-md border px-3 text-sm bg-background"
                 title="Notación"
               >
                 <option value="sharps">♯ Sostenidos</option>
                 <option value="flats">♭ Bemoles</option>
                 <option value="auto">Auto (según destino)</option>
               </select>
-              {/* ✅ Sin botón de instalar PWA */}
-              <ThemeToggle />
             </div>
           </div>
         </CardHeader>
@@ -186,6 +167,7 @@ export default function TransposerPage() {
               <TabsTrigger value="tono">Por Tono</TabsTrigger>
             </TabsList>
 
+            {/* POR INSTRUMENTO */}
             <TabsContent value="instrumento">
               <div className="grid gap-3 md:grid-cols-2">
                 <div>
@@ -206,6 +188,7 @@ export default function TransposerPage() {
                     ))}
                   </Select>
                 </div>
+
                 <div>
                   <label className="text-sm font-medium">Instrumento de Destino</label>
                   <Select
@@ -227,6 +210,7 @@ export default function TransposerPage() {
               </div>
             </TabsContent>
 
+            {/* POR TONO */}
             <TabsContent value="tono">
               <div className="grid gap-3 md:grid-cols-2">
                 <div>
@@ -245,6 +229,7 @@ export default function TransposerPage() {
                     ))}
                   </Select>
                 </div>
+
                 <div>
                   <label className="text-sm font-medium">Tono Deseado</label>
                   <Select
@@ -265,6 +250,7 @@ export default function TransposerPage() {
             </TabsContent>
           </Tabs>
 
+          {/* Áreas de texto */}
           <div className="grid gap-4 md:grid-cols-2 mt-4">
             <div>
               <div className="flex items-center justify-between mb-1">
@@ -284,6 +270,7 @@ export default function TransposerPage() {
                   />
                 </div>
               </div>
+
               <Textarea
                 placeholder="Ej: C G Am F / Bb Eb Cm F7… o cargue un archivo .txt"
                 value={inputText}
@@ -306,14 +293,18 @@ export default function TransposerPage() {
                   </Button>
                 </div>
               </div>
+
               <Textarea readOnly placeholder="Aquí aparecerá el resultado." value={outputText} />
             </div>
           </div>
 
+          {/* Acciones */}
           <div className="mt-6 flex flex-wrap gap-2">
             <Button onClick={doTranspose} disabled={isLoading}>
-              <ArrowRightLeft size={18} /> {isLoading ? 'Transponiendo…' : 'Transponer'}
+              <ArrowRightLeft size={18} />
+              {isLoading ? ' Transponiendo…' : ' Transponer'}
             </Button>
+
             <Button variant="destructive" onClick={clearAll}>
               <Eraser size={18} /> Limpiar Todo
             </Button>
