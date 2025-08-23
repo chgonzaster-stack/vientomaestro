@@ -27,7 +27,7 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 
-// Banner con instrumentos (nuevo)
+// Banner con instrumentos (si no lo estás usando, puedes borrar esta línea y el <Hero />)
 import Hero from '@/components/hero';
 
 const tabs = ['instrumento', 'tono'] as const;
@@ -172,7 +172,6 @@ export default function TransposerPage() {
           <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
             <div>
               <h1 className="text-3xl font-semibold">🎵 Viento Maestro</h1>
-              {/* H2 con la keyword principal (mejor peso semántico) */}
               <h2 className="mt-1 text-base text-white/80">
                 Transpositor de música para instrumentos de viento
               </h2>
@@ -184,7 +183,11 @@ export default function TransposerPage() {
                 <SelectTrigger>
                   <SelectValue placeholder="Notación" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent
+                  position="popper"
+                  sideOffset={4}
+                  className="z-[60] max-h-64 overflow-auto"
+                >
                   <SelectItem value="sharps">♯ Sostenidos</SelectItem>
                   <SelectItem value="flats">♭ Bemoles</SelectItem>
                   <SelectItem value="auto">Auto (según destino)</SelectItem>
@@ -194,7 +197,7 @@ export default function TransposerPage() {
           </div>
         </CardHeader>
 
-        {/* Banner con instrumentos */}
+        {/* Banner con instrumentos (opcional) */}
         <div className="px-6">
           <Hero />
         </div>
@@ -224,7 +227,11 @@ export default function TransposerPage() {
                       <SelectTrigger className="mt-1">
                         <SelectValue placeholder="Seleccionar origen..." />
                       </SelectTrigger>
-                      <SelectContent forceMount>
+                      <SelectContent
+                        position="popper"
+                        sideOffset={4}
+                        className="z-[60] max-h-64 overflow-auto"
+                      >
                         {INSTRUMENTS_DATA.map((i) => (
                           <SelectItem key={i.value} value={i.value}>
                             {i.label}
@@ -247,7 +254,11 @@ export default function TransposerPage() {
                       <SelectTrigger className="mt-1">
                         <SelectValue placeholder="Seleccionar destino..." />
                       </SelectTrigger>
-                      <SelectContent forceMount>
+                      <SelectContent
+                        position="popper"
+                        sideOffset={4}
+                        className="z-[60] max-h-64 overflow-auto"
+                      >
                         {INSTRUMENTS_DATA.map((i) => (
                           <SelectItem key={i.value} value={i.value}>
                             {i.label}
@@ -275,7 +286,11 @@ export default function TransposerPage() {
                       <SelectTrigger className="mt-1">
                         <SelectValue placeholder="Seleccionar tono..." />
                       </SelectTrigger>
-                      <SelectContent forceMount>
+                      <SelectContent
+                        position="popper"
+                        sideOffset={4}
+                        className="z-[60] max-h-64 overflow-auto"
+                      >
                         {concertKeys.map((k) => (
                           <SelectItem key={k.name} value={k.name}>
                             {k.name}
@@ -296,7 +311,11 @@ export default function TransposerPage() {
                       <SelectTrigger className="mt-1">
                         <SelectValue placeholder="Seleccionar tono..." />
                       </SelectTrigger>
-                      <SelectContent forceMount>
+                      <SelectContent
+                        position="popper"
+                        sideOffset={4}
+                        className="z-[60] max-h-64 overflow-auto"
+                      >
                         {concertKeys.map((k) => (
                           <SelectItem key={k.name} value={k.name}>
                             {k.name}
