@@ -49,7 +49,7 @@ export default function TransposerPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [year, setYear] = useState<number | null>(null);
 
-  // Notación: ♯/♭/auto (se usa en transposeLine)
+  // Notación: ♯/♭/auto
   const [notation, setNotation] = useState<Notation>('sharps');
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -99,7 +99,6 @@ export default function TransposerPage() {
 
         setOutputText(out);
       } else {
-        // por tono
         if (!originKey || !targetKey || !inputText.trim()) {
           toast({ title: 'Completa los campos requeridos', variant: 'destructive' });
           return;
@@ -177,16 +176,17 @@ export default function TransposerPage() {
               </p>
             </div>
 
-            {/* Selector de notación a la derecha */}
+            {/* Selector de notación */}
             <div className="w-44">
-              <Select
-                value={notation}
-                onValueChange={(v) => setNotation(v as Notation)}
-              >
+              <Select value={notation} onValueChange={(v) => setNotation(v as Notation)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Notación" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent
+                  position="popper"
+                  sideOffset={6}
+                  className="z-[60] bg-background border shadow-lg"
+                >
                   <SelectItem value="sharps">♯ Sostenidos</SelectItem>
                   <SelectItem value="flats">♭ Bemoles</SelectItem>
                   <SelectItem value="auto">Auto (según destino)</SelectItem>
@@ -206,102 +206,110 @@ export default function TransposerPage() {
 
             {/* === POR INSTRUMENTO === */}
             <TabsContent value="instrumento">
-              <div className="mt-4">
-                <div className="grid gap-3 md:grid-cols-2">
-                  <div>
-                    <label className="text-sm font-medium">Instrumento de Origen</label>
-                    <Select
-                      value={originInstrument?.value ?? undefined}
-                      onValueChange={(v) =>
-                        setOriginInstrument(
-                          INSTRUMENTS_DATA.find((i) => i.value === v) ?? null
-                        )
-                      }
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <div>
+                  <label className="text-sm font-medium">Instrumento de Origen</label>
+                  <Select
+                    value={originInstrument?.value ?? undefined}
+                    onValueChange={(v) =>
+                      setOriginInstrument(INSTRUMENTS_DATA.find((i) => i.value === v) ?? null)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar origen..." />
+                    </SelectTrigger>
+                    <SelectContent
+                      position="popper"
+                      sideOffset={6}
+                      className="z-[60] bg-background border shadow-lg"
                     >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar origen..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {INSTRUMENTS_DATA.map((i) => (
-                          <SelectItem key={i.value} value={i.value}>
-                            {i.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      {INSTRUMENTS_DATA.map((i) => (
+                        <SelectItem key={i.value} value={i.value}>
+                          {i.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                  <div>
-                    <label className="text-sm font-medium">Instrumento de Destino</label>
-                    <Select
-                      value={targetInstrument?.value ?? undefined}
-                      onValueChange={(v) =>
-                        setTargetInstrument(
-                          INSTRUMENTS_DATA.find((i) => i.value === v) ?? null
-                        )
-                      }
+                <div>
+                  <label className="text-sm font-medium">Instrumento de Destino</label>
+                  <Select
+                    value={targetInstrument?.value ?? undefined}
+                    onValueChange={(v) =>
+                      setTargetInstrument(INSTRUMENTS_DATA.find((i) => i.value === v) ?? null)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar destino..." />
+                    </SelectTrigger>
+                    <SelectContent
+                      position="popper"
+                      sideOffset={6}
+                      className="z-[60] bg-background border shadow-lg"
                     >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar destino..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {INSTRUMENTS_DATA.map((i) => (
-                          <SelectItem key={i.value} value={i.value}>
-                            {i.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      {INSTRUMENTS_DATA.map((i) => (
+                        <SelectItem key={i.value} value={i.value}>
+                          {i.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </TabsContent>
 
             {/* === POR TONO === */}
             <TabsContent value="tono">
-              <div className="mt-4">
-                <div className="grid gap-3 md:grid-cols-2">
-                  <div>
-                    <label className="text-sm font-medium">Tono Original</label>
-                    <Select
-                      value={originKey?.name ?? undefined}
-                      onValueChange={(v) =>
-                        setOriginKey(concertKeys.find((k) => k.name === v) ?? null)
-                      }
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <div>
+                  <label className="text-sm font-medium">Tono Original</label>
+                  <Select
+                    value={originKey?.name ?? undefined}
+                    onValueChange={(v) =>
+                      setOriginKey(concertKeys.find((k) => k.name === v) ?? null)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar tono..." />
+                    </SelectTrigger>
+                    <SelectContent
+                      position="popper"
+                      sideOffset={6}
+                      className="z-[60] bg-background border shadow-lg"
                     >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar tono..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {concertKeys.map((k) => (
-                          <SelectItem key={k.name} value={k.name}>
-                            {k.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      {concertKeys.map((k) => (
+                        <SelectItem key={k.name} value={k.name}>
+                          {k.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                  <div>
-                    <label className="text-sm font-medium">Tono Deseado</label>
-                    <Select
-                      value={targetKey?.name ?? undefined}
-                      onValueChange={(v) =>
-                        setTargetKey(concertKeys.find((k) => k.name === v) ?? null)
-                      }
+                <div>
+                  <label className="text-sm font-medium">Tono Deseado</label>
+                  <Select
+                    value={targetKey?.name ?? undefined}
+                    onValueChange={(v) =>
+                      setTargetKey(concertKeys.find((k) => k.name === v) ?? null)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar tono..." />
+                    </SelectTrigger>
+                    <SelectContent
+                      position="popper"
+                      sideOffset={6}
+                      className="z-[60] bg-background border shadow-lg"
                     >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar tono..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {concertKeys.map((k) => (
-                          <SelectItem key={k.name} value={k.name}>
-                            {k.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      {concertKeys.map((k) => (
+                        <SelectItem key={k.name} value={k.name}>
+                          {k.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </TabsContent>
@@ -309,87 +317,50 @@ export default function TransposerPage() {
 
           {/* Entrada / salida */}
           <div className="grid gap-4 md:grid-cols-2 mt-6">
-            {/* Entrada */}
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="text-sm font-medium">
-                  Notas/Acordes Originales (Cifrado Americano)
-                </label>
+                <label className="text-sm font-medium">Notas/Acordes Originales (Cifrado Americano)</label>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" onClick={handleFilePick}>
                     <Upload size={16} /> Cargar Archivo
                   </Button>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept=".txt"
-                    className="hidden"
-                    onChange={onFileChange}
-                  />
+                  <input ref={fileInputRef} type="file" accept=".txt" className="hidden" onChange={onFileChange} />
                 </div>
               </div>
-
               <Textarea
                 placeholder="Ej: C G Am F / Bb Eb Cm F7… o cargue un archivo .txt"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 className="min-h-[220px]"
               />
-              <p className="mt-1 text-xs opacity-70">
-                Separe notas o acordes con espacios, comas o saltos de línea.
-              </p>
             </div>
 
-            {/* Salida */}
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="text-sm font-medium">
-                  Notas/Acordes Transpuestos
-                </label>
+                <label className="text-sm font-medium">Notas/Acordes Transpuestos</label>
                 <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={!outputText}
-                    onClick={copyOut}
-                  >
+                  <Button variant="outline" size="sm" disabled={!outputText} onClick={copyOut}>
                     <ClipboardCopy size={16} /> Copiar
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={!outputText}
-                    onClick={downloadOut}
-                  >
+                  <Button variant="outline" size="sm" disabled={!outputText} onClick={downloadOut}>
                     <Download size={16} /> Descargar
                   </Button>
                 </div>
               </div>
-
-              <Textarea
-                readOnly
-                placeholder="Aquí aparecerá el resultado."
-                value={outputText}
-                className="min-h-[220px]"
-              />
+              <Textarea readOnly placeholder="Aquí aparecerá el resultado." value={outputText} className="min-h-[220px]" />
             </div>
           </div>
 
-          {/* Acciones */}
           <div className="mt-6 flex flex-wrap gap-2">
             <Button onClick={doTranspose} disabled={isLoading}>
-              <ArrowRightLeft size={18} />{' '}
-              {isLoading ? 'Transponiendo…' : 'Transponer'}
+              <ArrowRightLeft size={18} /> {isLoading ? 'Transponiendo…' : 'Transponer'}
             </Button>
-
             <Button variant="destructive" onClick={clearAll}>
               <Eraser size={18} /> Limpiar Todo
             </Button>
           </div>
 
-          <footer className="mt-6 text-xs opacity-60">
-            © {year ?? ''} Viento Maestro
-          </footer>
+          <footer className="mt-6 text-xs opacity-60">© {year ?? ''} Viento Maestro</footer>
         </CardContent>
       </Card>
     </main>
