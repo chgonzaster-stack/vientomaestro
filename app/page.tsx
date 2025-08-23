@@ -198,128 +198,95 @@ export default function TransposerPage() {
 
         <CardContent>
           {/* Tabs */}
-          <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)}>
-            <TabsList>
-              <TabsTrigger value="instrumento">Por Instrumento</TabsTrigger>
-              <TabsTrigger value="tono">Por Tono</TabsTrigger>
-            </TabsList>
 
-            {/* === POR INSTRUMENTO === */}
-            <TabsContent value="instrumento" className="mt-4">
-              <div className="grid gap-3 md:grid-cols-2">
-                {/* Origen */}
-                <div>
-                  <label className="text-sm font-medium">
-                    Instrumento de Origen
-                  </label>
+<Tabs value={tab} onValueChange={(v) => setTab(v as Tab)}>
+  <TabsList>
+    <TabsTrigger value="instrumento">Por Instrumento</TabsTrigger>
+    <TabsTrigger value="tono">Por Tono</TabsTrigger>
+  </TabsList>
 
-                  <Select
-                    value={originInstrument?.value ?? ''}
-                    onValueChange={(v) =>
-                      setOriginInstrument(
-                        INSTRUMENTS_DATA.find((i) => i.value === v) ?? null
-                      )
-                    }
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Seleccionar origen..." />
-                    </SelectTrigger>
+  {/* === POR INSTRUMENTO === */}
+  <TabsContent value="instrumento">
+    <div className="mt-4">
+      <div className="grid gap-3 md:grid-cols-2">
+        <div>
+          <label className="text-sm font-medium">Instrumento de Origen</label>
+          <Select
+            value={originInstrument?.value ?? ''}
+            onValueChange={(v) =>
+              setOriginInstrument(INSTRUMENTS_DATA.find((i) => i.value === v) ?? null)
+            }
+            placeholder="Seleccionar origen..."
+          >
+            {INSTRUMENTS_DATA.map((i) => (
+              <SelectItem key={i.value} value={i.value}>
+                {i.label}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
 
-                    <SelectContent className="max-h-64">
-                      {INSTRUMENTS_DATA.map((i) => (
-                        <SelectItem key={i.value} value={i.value}>
-                          {i.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+        <div>
+          <label className="text-sm font-medium">Instrumento de Destino</label>
+          <Select
+            value={targetInstrument?.value ?? ''}
+            onValueChange={(v) =>
+              setTargetInstrument(INSTRUMENTS_DATA.find((i) => i.value === v) ?? null)
+            }
+            placeholder="Seleccionar destino..."
+          >
+            {INSTRUMENTS_DATA.map((i) => (
+              <SelectItem key={i.value} value={i.value}>
+                {i.label}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
+      </div>
+    </div>
+  </TabsContent>
 
-                {/* Destino */}
-                <div>
-                  <label className="text-sm font-medium">
-                    Instrumento de Destino
-                  </label>
+  {/* === POR TONO === */}
+  <TabsContent value="tono">
+    <div className="mt-4">
+      <div className="grid gap-3 md:grid-cols-2">
+        <div>
+          <label className="text-sm font-medium">Tono Original</label>
+          <Select
+            value={originKey?.name ?? ''}
+            onValueChange={(v) =>
+              setOriginKey(concertKeys.find((k) => k.name === v) ?? null)
+            }
+            placeholder="Seleccionar tono..."
+          >
+            {concertKeys.map((k) => (
+              <SelectItem key={k.name} value={k.name}>
+                {k.name}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
 
-                  <Select
-                    value={targetInstrument?.value ?? ''}
-                    onValueChange={(v) =>
-                      setTargetInstrument(
-                        INSTRUMENTS_DATA.find((i) => i.value === v) ?? null
-                      )
-                    }
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Seleccionar destino..." />
-                    </SelectTrigger>
-
-                    <SelectContent className="max-h-64">
-                      {INSTRUMENTS_DATA.map((i) => (
-                        <SelectItem key={i.value} value={i.value}>
-                          {i.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* === POR TONO === */}
-            <TabsContent value="tono" className="mt-4">
-              <div className="grid gap-3 md:grid-cols-2">
-                {/* Tono original */}
-                <div>
-                  <label className="text-sm font-medium">Tono Original</label>
-
-                  <Select
-                    value={originKey?.name ?? ''}
-                    onValueChange={(v) =>
-                      setOriginKey(
-                        concertKeys.find((k) => k.name === v) ?? null
-                      )
-                    }
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Seleccionar tono..." />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-64">
-                      {concertKeys.map((k) => (
-                        <SelectItem key={k.name} value={k.name}>
-                          {k.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Tono destino */}
-                <div>
-                  <label className="text-sm font-medium">Tono Deseado</label>
-
-                  <Select
-                    value={targetKey?.name ?? ''}
-                    onValueChange={(v) =>
-                      setTargetKey(
-                        concertKeys.find((k) => k.name === v) ?? null
-                      )
-                    }
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Seleccionar tono..." />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-64">
-                      {concertKeys.map((k) => (
-                        <SelectItem key={k.name} value={k.name}>
-                          {k.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
+        <div>
+          <label className="text-sm font-medium">Tono Deseado</label>
+          <Select
+            value={targetKey?.name ?? ''}
+            onValueChange={(v) =>
+              setTargetKey(concertKeys.find((k) => k.name === v) ?? null)
+            }
+            placeholder="Seleccionar tono..."
+          >
+            {concertKeys.map((k) => (
+              <SelectItem key={k.name} value={k.name}>
+                {k.name}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
+      </div>
+    </div>
+  </TabsContent>
+</Tabs>
 
           {/* Entrada / salida */}
           <div className="grid gap-4 md:grid-cols-2 mt-6">
