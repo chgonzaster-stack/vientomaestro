@@ -18,7 +18,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/toast';
 
-// Select (Radix + shadcn) – versión mejorada
 import {
   Select,
   SelectTrigger,
@@ -51,6 +50,12 @@ export default function TransposerPage() {
 
   // Notación
   const [notation, setNotation] = useState<Notation>('sharps');
+
+  // Dropdown abierto (para no superponer: agregamos espaciador)
+  const [originOpen, setOriginOpen] = useState(false);
+  const [targetOpen, setTargetOpen] = useState(false);
+  const [originKeyOpen, setOriginKeyOpen] = useState(false);
+  const [targetKeyOpen, setTargetKeyOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { toast } = useToast();
@@ -165,13 +170,11 @@ export default function TransposerPage() {
               <h1 className="text-3xl font-semibold flex items-center gap-2">
                 🎵 Viento Maestro
               </h1>
-              {/* SEO: palabra clave como H2 */}
               <h2 className="mt-1 text-sm opacity-80">
                 Transpositor de música para instrumentos de viento
               </h2>
             </div>
 
-            {/* Selector de notación a la derecha */}
             <div className="w-44">
               <Select value={notation} onValueChange={(v) => setNotation(v as Notation)}>
                 <SelectTrigger>
@@ -186,7 +189,7 @@ export default function TransposerPage() {
             </div>
           </div>
 
-          {/* HERO – tarjetas con iconos (agregamos “Flauta”) */}
+          {/* HERO con iconos (Clarinete en SVG + Flauta SVG) */}
           <div className="mt-5 rounded-xl bg-muted/30 px-4 py-3">
             <p className="text-sm opacity-90 mb-3">
               Transpone partituras y acordes para instrumentos en C, Bb, Eb y F.
@@ -205,13 +208,31 @@ export default function TransposerPage() {
                 <div className="mt-2 text-sm font-medium">Trompeta</div>
               </div>
 
-              {/* Clarinete */}
+              {/* Clarinete (SVG simple) */}
               <div className="rounded-lg bg-background/60 border px-4 py-3">
-                <div className="text-2xl">🎼</div>
+                <svg
+                  viewBox="0 0 140 24"
+                  className="h-6 w-[140px] text-foreground/80"
+                  aria-label="Clarinete"
+                >
+                  {/* cuerpo */}
+                  <rect x="8" y="9" width="120" height="6" rx="3" className="fill-current opacity-80" />
+                  {/* campana */}
+                  <path d="M130 9 h6 c2 0 2 6 0 6 h-6 z" className="fill-current opacity-80" />
+                  {/* boquilla */}
+                  <path d="M8 9 l-6 2 6 2 z" className="fill-current opacity-80" />
+                  {/* llaves */}
+                  <circle cx="28" cy="12" r="2" className="fill-background" />
+                  <circle cx="46" cy="12" r="2" className="fill-background" />
+                  <circle cx="64" cy="12" r="2" className="fill-background" />
+                  <circle cx="82" cy="12" r="2" className="fill-background" />
+                  <circle cx="100" cy="12" r="2" className="fill-background" />
+                  <circle cx="118" cy="12" r="2" className="fill-background" />
+                </svg>
                 <div className="mt-2 text-sm font-medium">Clarinete</div>
               </div>
 
-              {/* Flauta – SVG simple */}
+              {/* Flauta (SVG simple) */}
               <div className="rounded-lg bg-background/60 border px-4 py-3">
                 <svg
                   viewBox="0 0 120 24"
@@ -242,21 +263,19 @@ export default function TransposerPage() {
             <TabsContent value="instrumento">
               <div className="mt-4">
                 <div className="grid gap-3 md:grid-cols-2">
-                  <div className="relative z-20 overflow-visible">
+                  {/* Origen */}
+                  <div className="relative overflow-visible">
                     <label className="text-sm font-medium">Instrumento de Origen</label>
                     <Select
+                      open={originOpen}
+                      onOpenChange={setOriginOpen}
                       value={originInstrument?.value ?? ''}
                       onValueChange={(v) =>
                         setOriginInstrument(INSTRUMENTS_DATA.find((i) => i.value === v) ?? null)
                       }
                     >
                       <SelectTrigger />
-                      <SelectContent
-                        position="popper"
-                        sideOffset={8}
-                        align="start"
-                        className="z-[9999]"
-                      >
+                      <SelectContent position="popper" sideOffset={8} align="start" className="z-[9999]">
                         {INSTRUMENTS_DATA.map((i) => (
                           <SelectItem key={i.value} value={i.value}>
                             {i.label}
@@ -264,23 +283,23 @@ export default function TransposerPage() {
                         ))}
                       </SelectContent>
                     </Select>
+                    {/* espaciador mientras el dropdown está abierto */}
+                    {originOpen && <div className="h-44" />}
                   </div>
 
-                  <div className="relative z-20 overflow-visible">
+                  {/* Destino */}
+                  <div className="relative overflow-visible">
                     <label className="text-sm font-medium">Instrumento de Destino</label>
                     <Select
+                      open={targetOpen}
+                      onOpenChange={setTargetOpen}
                       value={targetInstrument?.value ?? ''}
                       onValueChange={(v) =>
                         setTargetInstrument(INSTRUMENTS_DATA.find((i) => i.value === v) ?? null)
                       }
                     >
                       <SelectTrigger />
-                      <SelectContent
-                        position="popper"
-                        sideOffset={8}
-                        align="start"
-                        className="z-[9999]"
-                      >
+                      <SelectContent position="popper" sideOffset={8} align="start" className="z-[9999]">
                         {INSTRUMENTS_DATA.map((i) => (
                           <SelectItem key={i.value} value={i.value}>
                             {i.label}
@@ -288,6 +307,7 @@ export default function TransposerPage() {
                         ))}
                       </SelectContent>
                     </Select>
+                    {targetOpen && <div className="h-44" />}
                   </div>
                 </div>
               </div>
@@ -297,21 +317,18 @@ export default function TransposerPage() {
             <TabsContent value="tono">
               <div className="mt-4">
                 <div className="grid gap-3 md:grid-cols-2">
-                  <div className="relative z-20 overflow-visible">
+                  <div className="relative overflow-visible">
                     <label className="text-sm font-medium">Tono Original</label>
                     <Select
+                      open={originKeyOpen}
+                      onOpenChange={setOriginKeyOpen}
                       value={originKey?.name ?? ''}
                       onValueChange={(v) =>
                         setOriginKey(concertKeys.find((k) => k.name === v) ?? null)
                       }
                     >
                       <SelectTrigger />
-                      <SelectContent
-                        position="popper"
-                        sideOffset={8}
-                        align="start"
-                        className="z-[9999]"
-                      >
+                      <SelectContent position="popper" sideOffset={8} align="start" className="z-[9999]">
                         {concertKeys.map((k) => (
                           <SelectItem key={k.name} value={k.name}>
                             {k.name}
@@ -319,23 +336,21 @@ export default function TransposerPage() {
                         ))}
                       </SelectContent>
                     </Select>
+                    {originKeyOpen && <div className="h-44" />}
                   </div>
 
-                  <div className="relative z-20 overflow-visible">
+                  <div className="relative overflow-visible">
                     <label className="text-sm font-medium">Tono Deseado</label>
                     <Select
+                      open={targetKeyOpen}
+                      onOpenChange={setTargetKeyOpen}
                       value={targetKey?.name ?? ''}
                       onValueChange={(v) =>
                         setTargetKey(concertKeys.find((k) => k.name === v) ?? null)
                       }
                     >
                       <SelectTrigger />
-                      <SelectContent
-                        position="popper"
-                        sideOffset={8}
-                        align="start"
-                        className="z-[9999]"
-                      >
+                      <SelectContent position="popper" sideOffset={8} align="start" className="z-[9999]">
                         {concertKeys.map((k) => (
                           <SelectItem key={k.name} value={k.name}>
                             {k.name}
@@ -343,6 +358,7 @@ export default function TransposerPage() {
                         ))}
                       </SelectContent>
                     </Select>
+                    {targetKeyOpen && <div className="h-44" />}
                   </div>
                 </div>
               </div>
