@@ -260,7 +260,7 @@ export default function TransposerPage() {
 
               {/* Clarinete */}
               <div className="rounded-lg bg-background/60 border px-4 py-3">
-                <div className="text-2xl">🎼</div>
+                <div className="text-2xl">🪈</div>
                 <div className="mt-2 text-sm font-medium">Clarinete</div>
               </div>
 
