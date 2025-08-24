@@ -195,50 +195,7 @@ export default function TransposerPage() {
             </div>
           </div>
 
-                   {/* HERO – tarjetas con iconos (agregamos “Flauta”) */}
-          <div className="mt-5 rounded-xl bg-muted/30 px-4 py-3">
-            <p className="text-sm opacity-90 mb-3">
-              Transpone partituras y acordes para instrumentos en C, Bb, Eb y F.
-            </p>
-
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {/* Saxofón */}
-              <div className="rounded-lg bg-background/60 border px-4 py-3">
-                <div className="text-2xl">🎷</div>
-                <div className="mt-2 text-sm font-medium">Saxofón</div>
-              </div>
-
-              {/* Trompeta */}
-              <div className="rounded-lg bg-background/60 border px-4 py-3">
-                <div className="text-2xl">🎺</div>
-                <div className="mt-2 text-sm font-medium">Trompeta</div>
-              </div>
-
-              {/* Clarinete */}
-              <div className="rounded-lg bg-background/60 border px-4 py-3">
-                <div className="text-2xl">🎼</div>
-                <div className="mt-2 text-sm font-medium">Clarinete</div>
-              </div>
-
-              {/* Flauta – SVG simple */}
-              <div className="rounded-lg bg-background/60 border px-4 py-3">
-                <svg
-                  viewBox="0 0 120 24"
-                  className="h-6 w-[120px] text-foreground/80"
-                  aria-label="Flauta"
-                >
-                  <rect x="2" y="9" width="116" height="6" rx="3" className="fill-current opacity-80" />
-                  <circle cx="24" cy="12" r="2" className="fill-background" />
-                  <circle cx="44" cy="12" r="2" className="fill-background" />
-                  <circle cx="64" cy="12" r="2" className="fill-background" />
-                  <circle cx="84" cy="12" r="2" className="fill-background" />
-                  <circle cx="104" cy="12" r="2" className="fill-background" />
-                </svg>
-                <div className="mt-2 text-sm font-medium">Flauta</div>
-              </div>
-            </div>
-          </div>
-		  
+  
 		  {/* HERO – tarjetas con iconos (agregamos “Flauta”) */}
           <div className="mt-5 rounded-xl bg-muted/30 px-4 py-3">
             <p className="text-sm opacity-90 mb-3">
