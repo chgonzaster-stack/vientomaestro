@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
-import { Check, ChevronDown } from "lucide-react"
+import { Check, ChevronDown, ChevronUp, ChevronDown as CaretDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const Select = SelectPrimitive.Root
@@ -16,14 +16,17 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+      "relative flex h-10 w-full items-center justify-between rounded-md border border-input",
+      "bg-background px-3 py-2 text-sm placeholder:text-muted-foreground",
+      "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+      "disabled:cursor-not-allowed disabled:opacity-50",
       className
     )}
     {...props}
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 opacity-50" />
+      <ChevronDown className="h-4 w-4 opacity-60" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ))
@@ -36,17 +39,32 @@ const SelectContent = React.forwardRef<
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
       ref={ref}
+      // 👇 z-index alto + fondo sólido para que NO se mezcle con lo de atrás
       className={cn(
-        "relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-80",
+        "z-[1000] min-w-[12rem] overflow-hidden rounded-md border bg-background text-foreground shadow-xl",
+        "animate-in fade-in-80",
         position === "popper" && "translate-y-1",
         className
       )}
       position={position}
+      sideOffset={8}
+      align="start"
       {...props}
     >
-      <SelectPrimitive.Viewport className="p-1">
+      {/* Botón scroll arriba (cuando hay muchos ítems) */}
+      <SelectPrimitive.ScrollUpButton className="flex cursor-default items-center justify-center py-1 text-muted-foreground">
+        <ChevronUp className="h-4 w-4" />
+      </SelectPrimitive.ScrollUpButton>
+
+      {/* 👇 Viewport con alto máximo y scroll interno */}
+      <SelectPrimitive.Viewport className="max-h-[280px] overflow-y-auto p-1">
         {children}
       </SelectPrimitive.Viewport>
+
+      {/* Botón scroll abajo */}
+      <SelectPrimitive.ScrollDownButton className="flex cursor-default items-center justify-center py-1 text-muted-foreground">
+        <CaretDown className="h-4 w-4" />
+      </SelectPrimitive.ScrollDownButton>
     </SelectPrimitive.Content>
   </SelectPrimitive.Portal>
 ))
@@ -60,9 +78,12 @@ const SelectItem = React.forwardRef<
     ref={ref}
     className={cn(
       "relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none",
-      "focus:bg-accent focus:text-accent-foreground",
-      "data-[highlighted]:bg-yellow-400 data-[highlighted]:text-black", // hover amarillo
-      "data-[state=checked]:font-semibold", // item seleccionado
+      // estado normal
+      "bg-background text-foreground",
+      // hover/tecla: amarillo + texto negro (como el ejemplo)
+      "data-[highlighted]:bg-yellow-400 data-[highlighted]:text-black",
+      // seleccionado
+      "data-[state=checked]:font-semibold",
       className
     )}
     {...props}
