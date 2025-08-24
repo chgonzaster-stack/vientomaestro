@@ -195,35 +195,94 @@ export default function TransposerPage() {
             </div>
           </div>
 
-          {/* Banner de instrumentos (emojis + SVG flauta) */}
-          <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
-            <div className="rounded-xl border bg-card p-4 text-center shadow-sm">
-              <div className="text-3xl leading-none">🎷</div>
-              <div className="mt-2 text-sm font-medium">Saxofón</div>
-            </div>
-            <div className="rounded-xl border bg-card p-4 text-center shadow-sm">
-              <div className="text-3xl leading-none">🎺</div>
-              <div className="mt-2 text-sm font-medium">Trompeta</div>
-            </div>
-            <div className="rounded-xl border bg-card p-4 text-center shadow-sm">
-              <div className="text-3xl leading-none">🪈</div>
-              <div className="mt-2 text-sm font-medium">Clarinete</div>
-            </div>
-            <div className="rounded-xl border bg-card p-4 text-center shadow-sm">
-              {/* Flauta – SVG simple minimalista */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 640 512"
-                className="mx-auto h-8 w-8 fill-current"
-                aria-label="Flauta"
-                role="img"
-              >
-                <path d="M608 128h-64c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h64c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32zm-16 208c0 8.8-7.2 16-16 16s-16-7.2-16-16v-96c0-8.8 7.2-16 16-16s16 7.2 16 16v96zM96 128c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h64c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32H96zm16 208c0 8.8-7.2 16-16 16s-16-7.2-16-16v-96c0-8.8 7.2-16 16-16s16 7.2 16 16v96z" />
-              </svg>
-              <div className="mt-2 text-sm font-medium">Flauta</div>
+                   {/* HERO – tarjetas con iconos (agregamos “Flauta”) */}
+          <div className="mt-5 rounded-xl bg-muted/30 px-4 py-3">
+            <p className="text-sm opacity-90 mb-3">
+              Transpone partituras y acordes para instrumentos en C, Bb, Eb y F.
+            </p>
+
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {/* Saxofón */}
+              <div className="rounded-lg bg-background/60 border px-4 py-3">
+                <div className="text-2xl">🎷</div>
+                <div className="mt-2 text-sm font-medium">Saxofón</div>
+              </div>
+
+              {/* Trompeta */}
+              <div className="rounded-lg bg-background/60 border px-4 py-3">
+                <div className="text-2xl">🎺</div>
+                <div className="mt-2 text-sm font-medium">Trompeta</div>
+              </div>
+
+              {/* Clarinete */}
+              <div className="rounded-lg bg-background/60 border px-4 py-3">
+                <div className="text-2xl">🎼</div>
+                <div className="mt-2 text-sm font-medium">Clarinete</div>
+              </div>
+
+              {/* Flauta – SVG simple */}
+              <div className="rounded-lg bg-background/60 border px-4 py-3">
+                <svg
+                  viewBox="0 0 120 24"
+                  className="h-6 w-[120px] text-foreground/80"
+                  aria-label="Flauta"
+                >
+                  <rect x="2" y="9" width="116" height="6" rx="3" className="fill-current opacity-80" />
+                  <circle cx="24" cy="12" r="2" className="fill-background" />
+                  <circle cx="44" cy="12" r="2" className="fill-background" />
+                  <circle cx="64" cy="12" r="2" className="fill-background" />
+                  <circle cx="84" cy="12" r="2" className="fill-background" />
+                  <circle cx="104" cy="12" r="2" className="fill-background" />
+                </svg>
+                <div className="mt-2 text-sm font-medium">Flauta</div>
+              </div>
             </div>
           </div>
-        </CardHeader>
+		  
+		  {/* HERO – tarjetas con iconos (agregamos “Flauta”) */}
+          <div className="mt-5 rounded-xl bg-muted/30 px-4 py-3">
+            <p className="text-sm opacity-90 mb-3">
+              Transpone partituras y acordes para instrumentos en C, Bb, Eb y F.
+            </p>
+
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {/* Saxofón */}
+              <div className="rounded-lg bg-background/60 border px-4 py-3">
+                <div className="text-2xl">🎷</div>
+                <div className="mt-2 text-sm font-medium">Saxofón</div>
+              </div>
+
+              {/* Trompeta */}
+              <div className="rounded-lg bg-background/60 border px-4 py-3">
+                <div className="text-2xl">🎺</div>
+                <div className="mt-2 text-sm font-medium">Trompeta</div>
+              </div>
+
+              {/* Clarinete */}
+              <div className="rounded-lg bg-background/60 border px-4 py-3">
+                <div className="text-2xl">🎼</div>
+                <div className="mt-2 text-sm font-medium">Clarinete</div>
+              </div>
+
+              {/* Flauta – SVG simple */}
+              <div className="rounded-lg bg-background/60 border px-4 py-3">
+                <svg
+                  viewBox="0 0 120 24"
+                  className="h-6 w-[120px] text-foreground/80"
+                  aria-label="Flauta"
+                >
+                  <rect x="2" y="9" width="116" height="6" rx="3" className="fill-current opacity-80" />
+                  <circle cx="24" cy="12" r="2" className="fill-background" />
+                  <circle cx="44" cy="12" r="2" className="fill-background" />
+                  <circle cx="64" cy="12" r="2" className="fill-background" />
+                  <circle cx="84" cy="12" r="2" className="fill-background" />
+                  <circle cx="104" cy="12" r="2" className="fill-background" />
+                </svg>
+                <div className="mt-2 text-sm font-medium">Flauta</div>
+              </div>
+            </div>
+          </div>
+		 </CardHeader>
 
         <CardContent>
           {/* Tabs */}
