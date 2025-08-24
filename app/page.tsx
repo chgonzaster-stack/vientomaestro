@@ -9,7 +9,6 @@ import {
   concertKeys,
   type ConcertKey,
 } from '@/constants/instruments';
-
 import { transposeLine, type Notation } from '@/lib/transposition';
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -18,6 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/toast';
 
+// Select (Radix / shadcn) – recuerda que tu select.tsx ya usa Portal/z-50/overlay
 import {
   Select,
   SelectTrigger,
@@ -27,23 +27,28 @@ import {
 } from '@/components/ui/select';
 
 const tabs = ['instrumento', 'tono'] as const;
-type Tab = typeof tabs[number];
+type Tab = (typeof tabs)[number];
 
 export default function TransposerPage() {
   const [tab, setTab] = useState<Tab>('instrumento');
 
+  // Por instrumento
   const [originInstrument, setOriginInstrument] = useState<InstrumentInfo | null>(null);
   const [targetInstrument, setTargetInstrument] = useState<InstrumentInfo | null>(null);
 
+  // Por tono
   const [originKey, setOriginKey] = useState<ConcertKey | null>(null);
   const [targetKey, setTargetKey] = useState<ConcertKey | null>(null);
 
+  // Entrada/Salida
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
 
+  // Otros
   const [isLoading, setIsLoading] = useState(false);
   const [year, setYear] = useState<number | null>(null);
 
+  // Notación: ♯/♭/auto (se usa en transposeLine)
   const [notation, setNotation] = useState<Notation>('sharps');
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -51,8 +56,12 @@ export default function TransposerPage() {
 
   useEffect(() => setYear(new Date().getFullYear()), []);
 
-  function handleFilePick() { fileInputRef.current?.click(); }
+  /** Abrir picker de archivo */
+  function handleFilePick() {
+    fileInputRef.current?.click();
+  }
 
+  /** Leer archivo .txt */
   async function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -62,37 +71,46 @@ export default function TransposerPage() {
       e.currentTarget.value = '';
       return;
     }
+
     const text = await file.text();
     setInputText(text);
     e.currentTarget.value = '';
     toast({ title: 'Archivo cargado' });
   }
 
+  /** Ejecutar transposición */
   function doTranspose() {
     setIsLoading(true);
     try {
       if (tab === 'instrumento') {
         if (!originInstrument || !targetInstrument || !inputText.trim()) {
-          toast({ title: 'Completa los campos requeridos', variant: 'destructive' }); return;
+          toast({ title: 'Completa los campos requeridos', variant: 'destructive' });
+          return;
         }
         const semitones =
           targetInstrument.transposeSemitones - originInstrument.transposeSemitones;
         const prefersFlats = targetInstrument.prefersFlats ?? false;
+
         const out = inputText
           .split('\n')
           .map((line) => transposeLine(line, semitones, prefersFlats, notation))
           .join('\n');
+
         setOutputText(out);
       } else {
+        // por tono
         if (!originKey || !targetKey || !inputText.trim()) {
-          toast({ title: 'Completa los campos requeridos', variant: 'destructive' }); return;
+          toast({ title: 'Completa los campos requeridos', variant: 'destructive' });
+          return;
         }
         const semitones = targetKey.value - originKey.value;
         const prefersFlats = targetKey.prefersFlats ?? false;
+
         const out = inputText
           .split('\n')
           .map((line) => transposeLine(line, semitones, prefersFlats, notation))
           .join('\n');
+
         setOutputText(out);
       }
     } catch (err) {
@@ -103,21 +121,36 @@ export default function TransposerPage() {
     }
   }
 
+  /** Copiar salida */
   async function copyOut() {
-    try { await navigator.clipboard.writeText(outputText); toast({ title: 'Copiado' }); }
-    catch { toast({ title: 'No se pudo copiar', variant: 'destructive' }); }
+    try {
+      await navigator.clipboard.writeText(outputText);
+      toast({ title: 'Copiado' });
+    } catch {
+      toast({ title: 'No se pudo copiar', variant: 'destructive' });
+    }
   }
 
+  /** Descargar salida */
   function downloadOut() {
     if (!outputText) return;
-    const name = prompt('Nombre del archivo .txt', 'transpuesto.txt') || 'transpuesto.txt';
+    const name =
+      prompt('Nombre del archivo .txt', 'transpuesto.txt') || 'transpuesto.txt';
+
     const blob = new Blob([outputText], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = name.endsWith('.txt') ? name : `${name}.txt`;
-    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name.endsWith('.txt') ? name : `${name}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+
     toast({ title: 'Descargado' });
   }
 
+  /** Limpiar todo */
   function clearAll() {
     setTab('instrumento');
     setOriginInstrument(null);
@@ -136,17 +169,21 @@ export default function TransposerPage() {
           <div className="flex items-center justify-between gap-3">
             <div>
               <h1 className="text-3xl font-semibold flex items-center gap-2">
-                🎵 Viento Maestro <span className="opacity-60">🎶</span>
+                🎵 Viento Maestro <span className="text-2xl">🎵</span>
               </h1>
-              <h2 className="text-base opacity-90 font-medium">
+              {/* H2 SEO con la keyword principal */}
+              <h2 className="mt-1 text-base font-medium opacity-90">
                 Transpositor de música para instrumentos de viento
               </h2>
             </div>
 
-            {/* Notación */}
+            {/* Selector de notación a la derecha */}
             <div className="w-44">
-              <Select value={notation} onValueChange={(v) => setNotation(v as Notation)}>
-                <SelectTrigger>
+              <Select
+                value={notation}
+                onValueChange={(v) => setNotation(v as Notation)}
+              >
+                <SelectTrigger aria-label="Notación">
                   <SelectValue placeholder="Notación" />
                 </SelectTrigger>
                 <SelectContent>
@@ -158,7 +195,7 @@ export default function TransposerPage() {
             </div>
           </div>
 
-          {/* Banner de instrumentos (emojis) */}
+          {/* Banner de instrumentos (emojis + SVG flauta) */}
           <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
             <div className="rounded-xl border bg-card p-4 text-center shadow-sm">
               <div className="text-3xl leading-none">🎷</div>
@@ -169,12 +206,20 @@ export default function TransposerPage() {
               <div className="mt-2 text-sm font-medium">Trompeta</div>
             </div>
             <div className="rounded-xl border bg-card p-4 text-center shadow-sm">
-              {/* si tienes otro emoji de clarinete, cámbialo aquí */}
-              <div className="text-3xl leading-none">🎼</div>
+              <div className="text-3xl leading-none">🪈</div>
               <div className="mt-2 text-sm font-medium">Clarinete</div>
             </div>
             <div className="rounded-xl border bg-card p-4 text-center shadow-sm">
-              <div className="text-3xl leading-none">🎶</div>
+              {/* Flauta – SVG simple minimalista */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 640 512"
+                className="mx-auto h-8 w-8 fill-current"
+                aria-label="Flauta"
+                role="img"
+              >
+                <path d="M608 128h-64c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h64c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32zm-16 208c0 8.8-7.2 16-16 16s-16-7.2-16-16v-96c0-8.8 7.2-16 16-16s16 7.2 16 16v96zM96 128c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h64c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32H96zm16 208c0 8.8-7.2 16-16 16s-16-7.2-16-16v-96c0-8.8 7.2-16 16-16s16 7.2 16 16v96z" />
+              </svg>
               <div className="mt-2 text-sm font-medium">Flauta</div>
             </div>
           </div>
@@ -190,94 +235,102 @@ export default function TransposerPage() {
 
             {/* === POR INSTRUMENTO === */}
             <TabsContent value="instrumento">
-              <div className="grid gap-3 md:grid-cols-2 mt-4">
-                <div>
-                  <label className="text-sm font-medium">Instrumento de Origen</label>
-                  <Select
-                    value={originInstrument?.value ?? ""}
-                    onValueChange={(v) =>
-                      setOriginInstrument(INSTRUMENTS_DATA.find(i => i.value === v) ?? null)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar origen..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {INSTRUMENTS_DATA.map(i => (
-                        <SelectItem key={i.value} value={i.value}>
-                          {i.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="mt-4">
+                <div className="grid gap-3 md:grid-cols-2">
+                  <div>
+                    <label className="text-sm font-medium">Instrumento de Origen</label>
+                    <Select
+                      value={originInstrument?.value ?? ''}
+                      onValueChange={(v) =>
+                        setOriginInstrument(
+                          INSTRUMENTS_DATA.find((i) => i.value === v) ?? null
+                        )
+                      }
+                    >
+                      <SelectTrigger aria-label="Seleccionar origen…">
+                        <SelectValue placeholder="Seleccionar origen…" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {INSTRUMENTS_DATA.map((i) => (
+                          <SelectItem key={i.value} value={i.value}>
+                            {i.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                <div>
-                  <label className="text-sm font-medium">Instrumento de Destino</label>
-                  <Select
-                    value={targetInstrument?.value ?? ""}
-                    onValueChange={(v) =>
-                      setTargetInstrument(INSTRUMENTS_DATA.find(i => i.value === v) ?? null)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar destino..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {INSTRUMENTS_DATA.map(i => (
-                        <SelectItem key={i.value} value={i.value}>
-                          {i.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div>
+                    <label className="text-sm font-medium">Instrumento de Destino</label>
+                    <Select
+                      value={targetInstrument?.value ?? ''}
+                      onValueChange={(v) =>
+                        setTargetInstrument(
+                          INSTRUMENTS_DATA.find((i) => i.value === v) ?? null
+                        )
+                      }
+                    >
+                      <SelectTrigger aria-label="Seleccionar destino…">
+                        <SelectValue placeholder="Seleccionar destino…" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {INSTRUMENTS_DATA.map((i) => (
+                          <SelectItem key={i.value} value={i.value}>
+                            {i.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
             </TabsContent>
 
             {/* === POR TONO === */}
             <TabsContent value="tono">
-              <div className="grid gap-3 md:grid-cols-2 mt-4">
-                <div>
-                  <label className="text-sm font-medium">Tono Original</label>
-                  <Select
-                    value={originKey?.name ?? ""}
-                    onValueChange={(v) =>
-                      setOriginKey(concertKeys.find(k => k.name === v) ?? null)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar tono..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {concertKeys.map(k => (
-                        <SelectItem key={k.name} value={k.name}>
-                          {k.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="mt-4">
+                <div className="grid gap-3 md:grid-cols-2">
+                  <div>
+                    <label className="text-sm font-medium">Tono Original</label>
+                    <Select
+                      value={originKey?.name ?? ''}
+                      onValueChange={(v) =>
+                        setOriginKey(concertKeys.find((k) => k.name === v) ?? null)
+                      }
+                    >
+                      <SelectTrigger aria-label="Seleccionar tono original…">
+                        <SelectValue placeholder="Seleccionar tono…" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {concertKeys.map((k) => (
+                          <SelectItem key={k.name} value={k.name}>
+                            {k.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                <div>
-                  <label className="text-sm font-medium">Tono Deseado</label>
-                  <Select
-                    value={targetKey?.name ?? ""}
-                    onValueChange={(v) =>
-                      setTargetKey(concertKeys.find(k => k.name === v) ?? null)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar tono..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {concertKeys.map(k => (
-                        <SelectItem key={k.name} value={k.name}>
-                          {k.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div>
+                    <label className="text-sm font-medium">Tono Deseado</label>
+                    <Select
+                      value={targetKey?.name ?? ''}
+                      onValueChange={(v) =>
+                        setTargetKey(concertKeys.find((k) => k.name === v) ?? null)
+                      }
+                    >
+                      <SelectTrigger aria-label="Seleccionar tono deseado…">
+                        <SelectValue placeholder="Seleccionar tono…" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {concertKeys.map((k) => (
+                          <SelectItem key={k.name} value={k.name}>
+                            {k.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
             </TabsContent>
@@ -312,19 +365,32 @@ export default function TransposerPage() {
                 className="min-h-[220px]"
               />
               <p className="mt-1 text-xs opacity-70">
-                Separe notas o acordes con espacios, comas o saltos de línea.
+                Separe notas o acordes con espacios, comas o saltos de línea. Puede escribir
+                directamente o cargar un archivo.
               </p>
             </div>
 
             {/* Salida */}
             <div>
               <div className="flex items-center justify-between mb-1">
-                <label className="text-sm font-medium">Notas/Acordes Transpuestos</label>
+                <label className="text-sm font-medium">
+                  Notas/Acordes Transpuestos
+                </label>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" disabled={!outputText} onClick={copyOut}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={!outputText}
+                    onClick={copyOut}
+                  >
                     <ClipboardCopy size={16} /> Copiar
                   </Button>
-                  <Button variant="outline" size="sm" disabled={!outputText} onClick={downloadOut}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={!outputText}
+                    onClick={downloadOut}
+                  >
                     <Download size={16} /> Descargar
                   </Button>
                 </div>
@@ -342,14 +408,18 @@ export default function TransposerPage() {
           {/* Acciones */}
           <div className="mt-6 flex flex-wrap gap-2">
             <Button onClick={doTranspose} disabled={isLoading}>
-              <ArrowRightLeft size={18} /> {isLoading ? 'Transponiendo…' : 'Transponer'}
+              <ArrowRightLeft size={18} />{' '}
+              {isLoading ? 'Transponiendo…' : 'Transponer'}
             </Button>
+
             <Button variant="destructive" onClick={clearAll}>
               <Eraser size={18} /> Limpiar Todo
             </Button>
           </div>
 
-          <footer className="mt-6 text-xs opacity-60">© {year ?? ''} Viento Maestro</footer>
+          <footer className="mt-6 text-xs opacity-60">
+            © {year ?? ''} Viento Maestro
+          </footer>
         </CardContent>
       </Card>
     </main>
