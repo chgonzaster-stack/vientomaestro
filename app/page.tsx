@@ -205,12 +205,22 @@ export default function TransposerPage() {
                 <span className="text-sm">Trompeta</span>
               </div>
               <div className="rounded-lg border border-white/10 bg-white/5 p-3 flex items-center gap-2">
-                <span className="text-xl">🎶</span>
+                <span className="text-xl">🪈</span>
                 <span className="text-sm">Clarinete</span>
               </div>
               <div className="rounded-lg border border-white/10 bg-white/5 p-3 flex items-center gap-2">
-                <span className="text-xl">🎼</span>
-                <span className="text-sm">Flauta</span>
+              {/* Flauta – SVG simple minimalista */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 640 512"
+                className="mx-auto h-8 w-8 fill-current"
+                aria-label="Flauta"
+                role="img"
+              >
+                <path d="M608 128h-64c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h64c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32zm-16 208c0 8.8-7.2 16-16 16s-16-7.2-16-16v-96c0-8.8 7.2-16 16-16s16 7.2 16 16v96zM96 128c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h64c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32H96zm16 208c0 8.8-7.2 16-16 16s-16-7.2-16-16v-96c0-8.8 7.2-16 16-16s16 7.2 16 16v96z" />
+              </svg>
+              <div className="mt-2 text-sm font-medium">Flauta</div>
+				
               </div>
             </div>
           </div>
