@@ -208,8 +208,8 @@ export default function TransposerPage() {
                 <span className="text-xl">🪈</span>
                 <span className="text-sm">Clarinete</span>
               </div>
-              <div className="rounded-lg border border-white/10 bg-white/5 p-3 flex items-center gap-2">
-              {/* Flauta – SVG simple minimalista */}
+			  <div className="rounded-xl border bg-card p-4 text-center shadow-sm">
+               {/* Flauta – SVG simple minimalista */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 640 512"
