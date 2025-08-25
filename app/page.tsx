@@ -190,27 +190,27 @@ export default function TransposerPage() {
             </div>
           </div>
 
-          {/* Banner de instrumentos (emojis) */}
+          {/* Banner de instrumentos (emojis + Iconify) */}
           <div className="mt-4 rounded-xl bg-gradient-to-r from-indigo-950/60 via-indigo-900/40 to-transparent p-3 border border-indigo-800/40">
-            <p className="text-sm mb-3 opacity-90">
-              Transpone partituras y acordes para instrumentos en C, Bb, Eb y F.
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+           <p className="text-sm mb-3 opacity-90">
+           Transpone partituras y acordes para instrumentos en C, Bb, Eb y F.
+           </p>
+           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="rounded-lg border border-white/10 bg-white/5 p-3 flex items-center gap-2">
+             <span className="text-xl">🎷</span>
+             <span className="text-sm">Saxofón</span>
+             </div>
+             <div className="rounded-lg border border-white/10 bg-white/5 p-3 flex items-center gap-2">
+             <span className="text-xl">🎺</span>
+             <span className="text-sm">Trompeta</span>
+             </div>
               <div className="rounded-lg border border-white/10 bg-white/5 p-3 flex items-center gap-2">
-                <span className="text-xl">🎷</span>
-                <span className="text-sm">Saxofón</span>
+              <Icon icon="openmoji:clarinet" width="24" height="24" />
+              <span className="text-sm">Clarinete</span>
               </div>
               <div className="rounded-lg border border-white/10 bg-white/5 p-3 flex items-center gap-2">
-                <span className="text-xl">🎺</span>
-                <span className="text-sm">Trompeta</span>
-              </div>
-              <div className="rounded-lg border border-white/10 bg-white/5 p-3 flex items-center gap-2">
-                <span className="text-xl">🪈</span>
-                <span className="text-sm">Clarinete</span>
-              </div>
-              <div className="rounded-lg border border-white/10 bg-white/5 p-3 flex items-center gap-2">
-                <span className="text-xl">🪈</span>
-                <span className="text-sm">Flauta</span>
+              <span className="text-xl">🪈</span>
+               <span className="text-sm">Flauta</span>
               </div>
             </div>
           </div>
