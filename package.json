@@ -12,8 +12,8 @@
     "lint": "next lint",
     "export": "next build && next export"
   },
-    "dependencies": {
-    "next": "15.5.7",
+  "dependencies": {
+    "next": "^15.5.9",
     "next-pwa": "^5.6.0",
     "react": "19.1.0",
     "react-dom": "19.1.0"
